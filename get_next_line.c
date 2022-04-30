@@ -6,13 +6,13 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/04/30 20:46:07 by asoler           ###   ########.fr       */
+/*   Updated: 2022/04/30 21:13:01 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static int verify_lf(char *s, int size)
+int verify_lf(char *s, int size)
 {
 	while (*s != '\n' && size)
 	{
@@ -22,37 +22,34 @@ static int verify_lf(char *s, int size)
 	return (size);
 }
 
-void	buf_backup(char	*dest, char	*src, int	start)
-{
+// void	buf_backup(char	*dest, char	*src, int	start)
+// {
 	
-}
+// }
 
+#include <stdio.h>
 char	*get_next_line(int fd)
 {
 	char		*buf;
-	char		*buf2;
-	static char	*aux;
+	// char		*buf2;
+	// static char	*aux;
 	int			res;
 	static int	i;
 
 	i = 0;
+	res = 0;
 	if (fd < 0 || BUFFER_SIZE == 0)
 		return (0);
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	while (res == 0)
+	while (!res)
 	{
-		read(fd, buf, BUFFER_SIZE)
-		res = verify_lf(buf, BUFFER_SIZE)
-		while (!res)
-		{
-			i = line_size();
-			concatenar_str(buf2, buf);
-			aux = malloc(sizeof(char) * (BUFFER_SIZE - res + 1));
-			buf_backup(aux, buf, res);
-			i++;
-		}
-		// buf2 = malloc((sizeof(char) * ((i * BUFFER_SIZE) - res + 1))
+		read(fd, buf, BUFFER_SIZE);
+		res = verify_lf(buf, BUFFER_SIZE);
+		printf("%d\n", res);
+		i++;
 	}
+	printf("%d\n", i);
+		// buf2 = malloc((sizeof(char) * ((i * BUFFER_SIZE) - res + 1))
 	return (buf);
 }
 
