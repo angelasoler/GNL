@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/04/30 21:13:01 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/01 00:05:39 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,35 +22,70 @@ int verify_lf(char *s, int size)
 	return (size);
 }
 
-// void	buf_backup(char	*dest, char	*src, int	start)
-// {
-	
-// }
+int	gnl_len(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (*s)
+	{
+		if (*s == '\n')
+			return (i);
+		i++;
+		s++;
+	}
+	return (i);
+}
+
+char	*buf_backup(char	*dest, char	*src)
+{
+	int		total;
+	char	*result;
+	int		l_dest;
+	int		i;
+
+	i = 0;
+	l_dest = gnl_len(dest);
+	total = l_dest  + gnl_len(src) + 1;
+	result = malloc(total * sizeof(char));
+	while (total)
+	{
+		while (i < l_dest)
+		{
+			result[i] = dest[i];
+			i++;
+			total--;
+		}
+		result[i] = *src;
+		i++;
+		src++;
+		total--;
+	}
+	result[i] = 0;
+	free(dest);
+	return (result);
+}
 
 #include <stdio.h>
 char	*get_next_line(int fd)
 {
 	char		*buf;
-	// char		*buf2;
-	// static char	*aux;
-	int			res;
-	static int	i;
+	char		*result;
+	int	res;
 
-	i = 0;
 	res = 0;
 	if (fd < 0 || BUFFER_SIZE == 0)
 		return (0);
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	result = malloc(sizeof(char) * BUFFER_SIZE);
 	while (!res)
 	{
 		read(fd, buf, BUFFER_SIZE);
+		buf[BUFFER_SIZE] = 0;
 		res = verify_lf(buf, BUFFER_SIZE);
-		printf("%d\n", res);
-		i++;
+		result = buf_backup(result, buf);
 	}
-	printf("%d\n", i);
-		// buf2 = malloc((sizeof(char) * ((i * BUFFER_SIZE) - res + 1))
-	return (buf);
+	return (result);
 }
 
 #include <fcntl.h>
@@ -58,8 +93,12 @@ char	*get_next_line(int fd)
 int	main()
 {
 	char *result;
-	result = get_next_line(open("file.txt", O_RDONLY));
+	int fd;
 
+	fd = open("file.txt", O_RDONLY);
+	result = get_next_line(fd);
+	printf("%s\n", result);
+	result = get_next_line(fd);
 	printf("%s\n", result);
 }
 
