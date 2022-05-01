@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/01 21:44:20 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/01 22:13:57 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ char	*buf_backup(char	*dest, char	*src)
 
 	// if (!src)
 	// {
-	// 	free(dest);
 	// 	free(src);
 	// 	return (0);
 	// }
@@ -93,7 +92,7 @@ char	*get_next_line(int fd)
 	char		*result;
 	int			res;
 	int			i;
-	static int			x;
+	// static int			x;
 
 	i = 0;
 	res = 0;
@@ -112,12 +111,16 @@ char	*get_next_line(int fd)
 			if (res)
 				break;
 		}
-		x = read(fd, buf, BUFFER_SIZE);
+		read(fd, buf, BUFFER_SIZE);
 		buf[BUFFER_SIZE] = 0;
 		res = verify_lf(buf, BUFFER_SIZE);
 		result = buf_backup(result, buf);
-		if (!x)
-			return (0);
+		// if (!x && !result)
+		// {
+		// 	free(result);
+		// 	free(buf);
+		// 	return (0);
+		// }
 	}
 	if (res != 0)
 	{
@@ -143,7 +146,11 @@ int	main()
 
 	fd = open("file.txt", O_RDONLY);
 	while ((result = get_next_line(fd)))
+	{
 		printf("%s", result);
+		free(result);
+	}
+	close(fd);
 }
 
 // Repeated calls (e.g., using a loop) to your get_next_line() function should let
