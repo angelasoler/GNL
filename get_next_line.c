@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/01 19:41:10 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/01 20:58:10 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,6 @@ char	*buf_backup(char	*dest, char	*src)
 	return (result);
 }
 
-// void	aux_backup(static char *dest, char *src, int start)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (src[start])
-// 	{
-// 		dest[i] = src[start];
-// 		start--;
-// 	}
-// }
-
 #include <stdio.h>
 char	*get_next_line(int fd)
 {
@@ -95,6 +83,12 @@ char	*get_next_line(int fd)
 	result = malloc(sizeof(char) * BUFFER_SIZE);
 	while (!res)
 	{
+		if (aux)
+		{
+			result = buf_backup(result, aux);
+			free(aux);
+			aux = 0;
+		}
 		read(fd, buf, BUFFER_SIZE);
 		buf[BUFFER_SIZE] = 0;
 		res = verify_lf(buf, BUFFER_SIZE);
@@ -104,7 +98,6 @@ char	*get_next_line(int fd)
 	{
 		res = BUFFER_SIZE - res + 1;
 		aux = malloc(sizeof(char) * res);
-		// aux_backup(aux, buf, res);
 		while (buf[res])
 		{
 			aux[i] = buf[res];
@@ -112,7 +105,6 @@ char	*get_next_line(int fd)
 			i++;
 		}
 		aux[i] = 0;
-		printf("aux:%s\n", aux);
 	}
 	return (result);
 }
@@ -126,9 +118,11 @@ int	main()
 
 	fd = open("file.txt", O_RDONLY);
 	result = get_next_line(fd);
-	printf("%s\n", result);
-	// result = get_next_line(fd);
-	// printf("%s\n", result);
+	printf("%s", result);
+	result = get_next_line(fd);
+	printf("%s", result);
+	result = get_next_line(fd);
+	printf("%s", result);
 }
 
 // Repeated calls (e.g., using a loop) to your get_next_line() function should let
