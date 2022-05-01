@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/01 20:58:10 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/01 21:44:20 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,19 @@ int	gnl_len(char *s)
 	return (i);
 }
 
+int	ft_len(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (*s)
+	{
+		i++;
+		s++;
+	}
+	return (i);
+}
+
 char	*buf_backup(char	*dest, char	*src)
 {
 	int		total;
@@ -44,6 +57,12 @@ char	*buf_backup(char	*dest, char	*src)
 	int		l_dest;
 	int		i;
 
+	// if (!src)
+	// {
+	// 	free(dest);
+	// 	free(src);
+	// 	return (0);
+	// }
 	i = 0;
 	l_dest = gnl_len(dest);
 	total = l_dest  + gnl_len(src) + 1;
@@ -74,6 +93,7 @@ char	*get_next_line(int fd)
 	char		*result;
 	int			res;
 	int			i;
+	static int			x;
 
 	i = 0;
 	res = 0;
@@ -85,14 +105,19 @@ char	*get_next_line(int fd)
 	{
 		if (aux)
 		{
+			res = verify_lf(aux, ft_len(aux));
 			result = buf_backup(result, aux);
 			free(aux);
 			aux = 0;
+			if (res)
+				break;
 		}
-		read(fd, buf, BUFFER_SIZE);
+		x = read(fd, buf, BUFFER_SIZE);
 		buf[BUFFER_SIZE] = 0;
 		res = verify_lf(buf, BUFFER_SIZE);
 		result = buf_backup(result, buf);
+		if (!x)
+			return (0);
 	}
 	if (res != 0)
 	{
@@ -117,12 +142,8 @@ int	main()
 	int fd;
 
 	fd = open("file.txt", O_RDONLY);
-	result = get_next_line(fd);
-	printf("%s", result);
-	result = get_next_line(fd);
-	printf("%s", result);
-	result = get_next_line(fd);
-	printf("%s", result);
+	while ((result = get_next_line(fd)))
+		printf("%s", result);
 }
 
 // Repeated calls (e.g., using a loop) to your get_next_line() function should let
