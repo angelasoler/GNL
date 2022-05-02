@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/01 22:13:57 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/02 22:49:05 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int verify_lf(char *s, int size)
 {
+	// if (size < BUFFER_SIZE)
+	// 	return (0);
 	while (*s != '\n' && size)
 	{
 		s++;
@@ -27,6 +29,8 @@ int	gnl_len(char *s)
 	int	i;
 
 	i = 0;
+	// if (*s == '\n')
+	// 	return (1);
 	while (*s)
 	{
 		if (*s == '\n')
@@ -57,11 +61,6 @@ char	*buf_backup(char	*dest, char	*src)
 	int		l_dest;
 	int		i;
 
-	// if (!src)
-	// {
-	// 	free(src);
-	// 	return (0);
-	// }
 	i = 0;
 	l_dest = gnl_len(dest);
 	total = l_dest  + gnl_len(src) + 1;
@@ -92,7 +91,7 @@ char	*get_next_line(int fd)
 	char		*result;
 	int			res;
 	int			i;
-	// static int			x;
+	static int	x;
 
 	i = 0;
 	res = 0;
@@ -100,31 +99,49 @@ char	*get_next_line(int fd)
 		return (0);
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	result = malloc(sizeof(char) * BUFFER_SIZE);
+	// printf("%d\n", x);
+	// x = 1;
+	// printf("%d\n", x);
 	while (!res)
 	{
 		if (aux)
 		{
 			res = verify_lf(aux, ft_len(aux));
 			result = buf_backup(result, aux);
+			// printf("%s\n", result);
 			free(aux);
-			aux = 0;
 			if (res)
 				break;
+			aux = 0;
 		}
-		read(fd, buf, BUFFER_SIZE);
-		buf[BUFFER_SIZE] = 0;
-		res = verify_lf(buf, BUFFER_SIZE);
+		x = read(fd, buf, BUFFER_SIZE);
+		if (!x)
+		{
+			free(buf);
+			free(aux);
+			return (0);
+		}
+		// printf("%d\n", x);
+		if (x < BUFFER_SIZE)
+			buf[x] = 0;
+		else
+			buf[BUFFER_SIZE] = 0;
+		// printf("%d\n", ft_len(buf));
+		res = verify_lf(buf, ft_len(buf));
 		result = buf_backup(result, buf);
-		// if (!x && !result)
-		// {
-		// 	free(result);
-		// 	free(buf);
-		// 	return (0);
-		// }
 	}
-	if (res != 0)
+	// printf("%d\n", res);
+	if (res)
 	{
-		res = BUFFER_SIZE - res + 1;
+		// printf("%d\n", res);
+		// if (aux)
+		// {
+		// 	res = ft_len(aux) - res + 1;
+		// 	buf = buf_backup(buf, aux);
+		// 	free(aux);
+		// }
+		// else
+			res = BUFFER_SIZE - res + 1;
 		aux = malloc(sizeof(char) * res);
 		while (buf[res])
 		{
@@ -134,6 +151,7 @@ char	*get_next_line(int fd)
 		}
 		aux[i] = 0;
 	}
+	// printf("%s\n", result);
 	return (result);
 }
 
@@ -145,8 +163,10 @@ int	main()
 	int fd;
 
 	fd = open("file.txt", O_RDONLY);
-	while ((result = get_next_line(fd)))
+	result = "";
+	while (result)
 	{
+		result = get_next_line(fd);
 		printf("%s", result);
 		free(result);
 	}
