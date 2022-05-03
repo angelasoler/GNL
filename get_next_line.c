@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/02 22:49:05 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/03 15:03:31 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,20 @@
 
 int verify_lf(char *s, int size)
 {
-	// if (size < BUFFER_SIZE)
-	// 	return (0);
+	// if (*s == '\n')
+	// {
+	// 	size--;
+	// 	return (size);
+	// }
 	while (*s != '\n' && size)
 	{
 		s++;
 		size--;
+		// if (*s == '\n')
+		// {
+		// 	size--;
+		// 	return (size);
+		// }
 	}
 	return (size);
 }
@@ -91,8 +99,12 @@ char	*get_next_line(int fd)
 	char		*result;
 	int			res;
 	int			i;
+	// int			len_result;
 	static int	x;
+	static char cobaia;
 
+	if (cobaia == 'x')
+		return (0);
 	i = 0;
 	res = 0;
 	if (fd < 0 || BUFFER_SIZE == 0)
@@ -109,17 +121,21 @@ char	*get_next_line(int fd)
 			res = verify_lf(aux, ft_len(aux));
 			result = buf_backup(result, aux);
 			// printf("%s\n", result);
-			free(aux);
 			if (res)
+			{
+				
 				break;
-			aux = 0;
+			}
+				// free(aux);
+				// como se usa static *char com malloc?
+				aux = 0;
 		}
 		x = read(fd, buf, BUFFER_SIZE);
 		if (!x)
 		{
-			free(buf);
-			free(aux);
-			return (0);
+			// free(buf);
+			// free(aux);
+			cobaia = 'x';
 		}
 		// printf("%d\n", x);
 		if (x < BUFFER_SIZE)
@@ -130,25 +146,46 @@ char	*get_next_line(int fd)
 		res = verify_lf(buf, ft_len(buf));
 		result = buf_backup(result, buf);
 	}
-	// printf("%d\n", res);
 	if (res)
 	{
+		// se entrar aqui despois de sair do aux, vai fazer um back so resto do back
+		// entao o res muda o len de aux, deve ser apartir da posição despoi q achou lf
 		// printf("%d\n", res);
 		// if (aux)
 		// {
-		// 	res = ft_len(aux) - res + 1;
-		// 	buf = buf_backup(buf, aux);
+		// 	len_result = ft_len(result);
+		// 	res = ft_len(aux) - len_result;
+		// 	printf("%s\n", buf);
+		// 	// printf("%d\n", aux[1]);
+		// 	// printf("%d\n", res);
+		// 	free(buf);
+		// 	buf = malloc(sizeof(char) * res + 1);
+		// 	while (aux[len_result - 1])
+		// 	{
+		// 		buf[i] = aux[len_result - 1];
+		// 		len_result++;
+		// 	}
+		// 	// passar aux a buf
 		// 	free(aux);
+		// 	i = 0;
+		// 	aux = malloc(sizeof(char) * (res + 1));
+		// 	while (buf[i])
+		// 	{
+		// 		aux[i] = buf[i];
+		// 		res--;
+		// 		i++;
+		// 	}
 		// }
 		// else
-			res = BUFFER_SIZE - res + 1;
-		aux = malloc(sizeof(char) * res);
-		while (buf[res])
-		{
-			aux[i] = buf[res];
-			res++;
-			i++;
-		}
+		// {
+			aux = malloc(sizeof(char) * (res + 1));
+			while (buf[BUFFER_SIZE - res])
+			{
+				aux[i] = buf[BUFFER_SIZE - res];
+				res--;
+				i++;
+			}
+		// }
 		aux[i] = 0;
 	}
 	// printf("%s\n", result);
@@ -166,11 +203,13 @@ int	main()
 	result = "";
 	while (result)
 	{
+		printf("call: ");
 		result = get_next_line(fd);
 		printf("%s", result);
 		free(result);
 	}
 	close(fd);
+	return (0);
 }
 
 // Repeated calls (e.g., using a loop) to your get_next_line() function should let
