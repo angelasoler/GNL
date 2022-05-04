@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/03 16:35:11 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/04 14:28:03 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ int verify_lf(char *s, int size)
 	{
 		s++;
 		size--;
+		// if (*s == '\n')
+		// {
+		// 	size--;
+		// 	return (size);
+		// }
 	}
 	return (size);
 }
@@ -65,7 +70,7 @@ char	*buf_backup(char	*dest, char	*src)
 	i = 0;
 	l_dest = gnl_len(dest);
 	total = l_dest  + gnl_len(src) + 1;
-	result = malloc(total * sizeof(char));
+	result = malloc(total * sizeof(char *));
 	while (total)
 	{
 		while (i < l_dest)
@@ -101,8 +106,8 @@ char	*get_next_line(int fd)
 	res = 0;
 	if (fd < 0 || BUFFER_SIZE == 0)
 		return (0);
-	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	result = malloc(sizeof(char) * BUFFER_SIZE);
+	buf = malloc(sizeof(char *) * (BUFFER_SIZE + 1));
+	result = malloc(sizeof(char *) * (BUFFER_SIZE + 1));
 	*result = 0;
 	// inicializar com zeros
 	while (!res)
@@ -111,6 +116,12 @@ char	*get_next_line(int fd)
 		{
 			res = verify_lf(aux, ft_len(aux));
 			result = buf_backup(result, aux);
+			if (*aux == 10 && ft_len(aux) == 1)
+			{
+				free(aux);
+				aux = 0;
+				return (result);
+			}
 			if (res)
 			{
 				break;
@@ -119,11 +130,15 @@ char	*get_next_line(int fd)
 			aux = 0;
 		}
 		x = read(fd, buf, BUFFER_SIZE);
-		if (!x && !*result)
+		if (!res && !x)
 		{
-			printf("%s\n", result);
-			printf("%d\n", x);
-			return (0);
+			if (!x && !*result)
+			{
+				// printf("%s\n", result);
+				// printf("%d\n", x);
+				return (0);
+			}
+			return (result);
 		}
 		if (x < BUFFER_SIZE)
 			buf[x] = 0;
@@ -134,13 +149,20 @@ char	*get_next_line(int fd)
 	}
 	if (res)
 	{
-			aux = malloc(sizeof(char) * (res + 1));
-			while (buf[BUFFER_SIZE - res])
+		if (!aux)
+		{
+			aux = malloc(sizeof(char *) * (res));
+			while (buf[BUFFER_SIZE - res + 1])
 			{
-				aux[i] = buf[BUFFER_SIZE - res];
+				aux[i] = buf[BUFFER_SIZE - res + 1];
 				res--;
 				i++;
 			}
+		}
+		else
+		{
+			
+		}
 		aux[i] = 0;
 	}
 	return (result);
@@ -154,12 +176,12 @@ int	main()
 	int fd;
 
 	fd = open("file.txt", O_RDONLY);
-	result = "";
+	result = get_next_line(fd);
 	while (result)
 	{
 		printf("call: ");
-		result = get_next_line(fd);
 		printf("%s", result);
+		result = get_next_line(fd);
 	}
 	close(fd);
 	return (0);
