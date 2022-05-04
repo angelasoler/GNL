@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/04 14:28:03 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/04 15:45:19 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,10 @@
 
 int verify_lf(char *s, int size)
 {
-	// if (*s == '\n')
-	// {
-	// 	size--;
-	// 	return (size);
-	// }
 	while (*s != '\n' && size)
 	{
 		s++;
 		size--;
-		// if (*s == '\n')
-		// {
-		// 	size--;
-		// 	return (size);
-		// }
 	}
 	return (size);
 }
@@ -98,18 +88,14 @@ char	*get_next_line(int fd)
 	int			res;
 	int			i;
 	static int	x;
-	// static char cobaia;
 
-	// if (cobaia == 'x')
-	// 	return (0);
 	i = 0;
 	res = 0;
 	if (fd < 0 || BUFFER_SIZE == 0)
 		return (0);
-	buf = malloc(sizeof(char *) * (BUFFER_SIZE + 1));
-	result = malloc(sizeof(char *) * (BUFFER_SIZE + 1));
+	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	*result = 0;
-	// inicializar com zeros
 	while (!res)
 	{
 		if (aux)
@@ -134,34 +120,22 @@ char	*get_next_line(int fd)
 		{
 			if (!x && !*result)
 			{
-				// printf("%s\n", result);
-				// printf("%d\n", x);
 				return (0);
 			}
 			return (result);
 		}
-		if (x < BUFFER_SIZE)
-			buf[x] = 0;
-		else
-			buf[BUFFER_SIZE] = 0;
+		buf[x] = 0;
 		res = verify_lf(buf, ft_len(buf));
 		result = buf_backup(result, buf);
 	}
 	if (res)
 	{
-		if (!aux)
+		aux = malloc(sizeof(char) * (res));
+		while (buf[BUFFER_SIZE - res + 1])
 		{
-			aux = malloc(sizeof(char *) * (res));
-			while (buf[BUFFER_SIZE - res + 1])
-			{
-				aux[i] = buf[BUFFER_SIZE - res + 1];
-				res--;
-				i++;
-			}
-		}
-		else
-		{
-			
+			aux[i] = buf[BUFFER_SIZE - res + 1];
+			res--;
+			i++;
 		}
 		aux[i] = 0;
 	}
