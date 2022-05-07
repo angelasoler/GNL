@@ -6,13 +6,13 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/04 15:45:19 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/07 23:08:41 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int verify_lf(char *s, int size)
+int	verify_lf(char *s, int size)
 {
 	while (*s != '\n' && size)
 	{
@@ -59,7 +59,7 @@ char	*buf_backup(char	*dest, char	*src)
 
 	i = 0;
 	l_dest = gnl_len(dest);
-	total = l_dest  + gnl_len(src) + 1;
+	total = l_dest + gnl_len(src) + 1;
 	result = malloc(total * sizeof(char *));
 	while (total)
 	{
@@ -79,7 +79,6 @@ char	*buf_backup(char	*dest, char	*src)
 	return (result);
 }
 
-#include <stdio.h>
 char	*get_next_line(int fd)
 {
 	char		*buf;
@@ -109,9 +108,7 @@ char	*get_next_line(int fd)
 				return (result);
 			}
 			if (res)
-			{
-				break;
-			}
+				break ;
 			free(aux);
 			aux = 0;
 		}
@@ -119,9 +116,7 @@ char	*get_next_line(int fd)
 		if (!res && !x)
 		{
 			if (!x && !*result)
-			{
 				return (0);
-			}
 			return (result);
 		}
 		buf[x] = 0;
@@ -130,18 +125,32 @@ char	*get_next_line(int fd)
 	}
 	if (res)
 	{
-		aux = malloc(sizeof(char) * (res));
-		while (buf[BUFFER_SIZE - res + 1])
+		if (aux)
 		{
-			aux[i] = buf[BUFFER_SIZE - res + 1];
-			res--;
-			i++;
+			res = ft_len(result);
+			while (aux[res])
+			{
+				aux[i] = aux[res];
+				i++;
+				res++;
+			}
+		}
+		else
+		{
+			aux = malloc(sizeof(char) * (res));
+			while (buf[BUFFER_SIZE - res + 1])
+			{
+				aux[i] = buf[BUFFER_SIZE - res + 1];
+				res--;
+				i++;
+			}
 		}
 		aux[i] = 0;
 	}
 	return (result);
 }
 
+#include <stdio.h>
 #include <fcntl.h>
 #include <stdio.h>
 int	main()
