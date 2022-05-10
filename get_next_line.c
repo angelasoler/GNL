@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/07 23:08:41 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/10 02:20:41 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ char	*get_next_line(int fd)
 	char		*result;
 	int			res;
 	int			i;
-	static int	x;
+	int	x;
 
 	i = 0;
 	res = 0;
@@ -116,7 +116,14 @@ char	*get_next_line(int fd)
 		if (!res && !x)
 		{
 			if (!x && !*result)
+			{
+				free(result);
+				free(buf);
+				free(aux);
 				return (0);
+			}
+			free(buf);
+			free(aux);
 			return (result);
 		}
 		buf[x] = 0;
@@ -147,28 +154,29 @@ char	*get_next_line(int fd)
 		}
 		aux[i] = 0;
 	}
+	free(buf);
 	return (result);
 }
 
-#include <stdio.h>
-#include <fcntl.h>
-#include <stdio.h>
-int	main()
-{
-	char *result;
-	int fd;
+// #include <stdio.h>
+// #include <fcntl.h>
+// #include <stdio.h>
+// int	main()
+// {
+// 	char *result;
+// 	int fd;
 
-	fd = open("file.txt", O_RDONLY);
-	result = get_next_line(fd);
-	while (result)
-	{
-		printf("call: ");
-		printf("%s", result);
-		result = get_next_line(fd);
-	}
-	close(fd);
-	return (0);
-}
+// 	fd = open("file.txt", O_RDONLY);
+// 	result = get_next_line(fd);
+// 	while (result)
+// 	{
+// 		printf("call: ");
+// 		printf("%s", result);
+// 		result = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
 
 // Repeated calls (e.g., using a loop) to your get_next_line() function should let
 // you read the text file pointed to by the file descriptor, one line at a time.
