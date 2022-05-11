@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/11 15:41:36 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/11 16:38:46 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,8 @@ char	*get_next_line(int fd)
 		{
 			if (!x && !*result)
 			{
-				ft_free(result, buf);
-				free(aux);
-				return (0);
+				free(result);
+				result = 0;
 			}
 			ft_free(aux, buf);
 			return (result);
