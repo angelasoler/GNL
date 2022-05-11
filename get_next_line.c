@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/10 14:34:18 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/11 15:00:57 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,18 @@ int	ft_len(char *s)
 	return (i);
 }
 
+size_t	ft_cpy(char *dest, const char *src)
+{
+	while (*src)
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+	*dest = 0;
+	return (ft_len(dest));
+}
+
 char	*buf_backup(char	*dest, char	*src)
 {
 	int		total;
@@ -86,10 +98,8 @@ char	*get_next_line(int fd)
 	static char	*aux;
 	char		*result;
 	int			res;
-	int			i;
 	int			x;
 
-	i = 0;
 	res = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 256)
 		return (0);
@@ -108,7 +118,6 @@ char	*get_next_line(int fd)
 			aux = 0;
 		}
 		x = read(fd, buf, BUFFER_SIZE);
-		// printf("%d\n", x);
 		if (x < 0 || x > BUFFER_SIZE)
 		{
 			free(result);
@@ -136,24 +145,13 @@ char	*get_next_line(int fd)
 		if (aux)
 		{
 			res = ft_len(result);
-			while (aux[res])
-			{
-				aux[i] = aux[res];
-				i++;
-				res++;
-			}
+			ft_cpy(aux, (aux + res));
 		}
 		else
 		{
 			aux = malloc(sizeof(char) * (res));
-			while (buf[x - res + 1])
-			{
-				aux[i] = buf[x- res + 1];
-				res--;
-				i++;
-			}
+			ft_cpy(aux, (buf + (x - res + 1)));
 		}
-		aux[i] = 0;
 	}
 	free(buf);
 	return (result);
@@ -164,20 +162,18 @@ char	*get_next_line(int fd)
 // int	main()
 // {
 // 	char *result;
-// 	// int fd;
+// 	int fd;
 
-// 		result = get_next_line(20);
+// 	fd = open("file.txt", O_RDONLY);
+// 	result = get_next_line(fd);
+// 	while (result)
+// 	{
+// 		printf("call: ");
 // 		printf("%s", result);
-// 	// fd = open("file.txt", O_RDONLY);
-// 	// result = get_next_line(fd);
-// 	// while (result)
-// 	// {
-// 	// 	printf("call: ");
-// 	// 	printf("%s", result);
-// 	// 	result = get_next_line(fd);
-// 	// }
-// 	// close(fd);
-// 	// return (0);
+// 		result = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	return (0);
 // }
 
 // Repeated calls (e.g., using a loop) to your get_next_line() function should let
