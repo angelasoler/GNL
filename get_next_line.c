@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/11 15:00:57 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/11 15:41:36 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,12 @@ char	*buf_backup(char	*dest, char	*src)
 	return (result);
 }
 
+void	ft_free(char *s1, char *s2)
+{
+	free(s1);
+	free(s2);
+}
+
 #include <stdio.h>
 char	*get_next_line(int fd)
 {
@@ -120,38 +126,33 @@ char	*get_next_line(int fd)
 		x = read(fd, buf, BUFFER_SIZE);
 		if (x < 0 || x > BUFFER_SIZE)
 		{
-			free(result);
-			free(buf);
-			return(0);
+			ft_free(result, buf);
+			return (0);
 		}
 		if (!res && !x)
 		{
 			if (!x && !*result)
 			{
-				free(result);
-				free(buf);
+				ft_free(result, buf);
 				free(aux);
 				return (0);
 			}
-			free(aux);
-			break ;
+			ft_free(aux, buf);
+			return (result);
 		}
 		buf[x] = 0;
 		res = verify_lf(buf, ft_len(buf));
 		result = buf_backup(result, buf);
 	}
-	if (res)
+	if (aux)
 	{
-		if (aux)
-		{
-			res = ft_len(result);
-			ft_cpy(aux, (aux + res));
-		}
-		else
-		{
-			aux = malloc(sizeof(char) * (res));
-			ft_cpy(aux, (buf + (x - res + 1)));
-		}
+		res = ft_len(result);
+		ft_cpy(aux, (aux + res));
+	}
+	else
+	{
+		aux = malloc(sizeof(char) * (res));
+		ft_cpy(aux, (buf + (x - res + 1)));
 	}
 	free(buf);
 	return (result);
