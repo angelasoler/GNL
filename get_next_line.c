@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/11 16:38:46 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/12 16:09:20 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	ft_len(char *s)
 	return (i);
 }
 
-size_t	ft_cpy(char *dest, const char *src)
+void	ft_cpy(char *dest, char *src)
 {
 	while (*src)
 	{
@@ -59,7 +59,6 @@ size_t	ft_cpy(char *dest, const char *src)
 		src++;
 	}
 	*dest = 0;
-	return (ft_len(dest));
 }
 
 char	*buf_backup(char	*dest, char	*src)
@@ -97,6 +96,16 @@ void	ft_free(char *s1, char *s2)
 	free(s2);
 }
 
+int	ft_error(char *result, char *buf, int x)
+{
+	if (x < 0 || x > BUFFER_SIZE)
+	{
+		ft_free(result, buf);
+		return (1);
+	}
+	return (0);
+}
+
 #include <stdio.h>
 char	*get_next_line(int fd)
 {
@@ -106,12 +115,12 @@ char	*get_next_line(int fd)
 	int			res;
 	int			x;
 
-	res = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 256)
 		return (0);
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	*result = 0;
+	res = 0;
 	while (!res)
 	{
 		if (aux)
@@ -124,14 +133,11 @@ char	*get_next_line(int fd)
 			aux = 0;
 		}
 		x = read(fd, buf, BUFFER_SIZE);
-		if (x < 0 || x > BUFFER_SIZE)
-		{
-			ft_free(result, buf);
+		if (ft_error(result, buf, x))
 			return (0);
-		}
-		if (!res && !x)
+		if (!x)
 		{
-			if (!x && !*result)
+			if (!*result)
 			{
 				free(result);
 				result = 0;
@@ -140,14 +146,11 @@ char	*get_next_line(int fd)
 			return (result);
 		}
 		buf[x] = 0;
-		res = verify_lf(buf, ft_len(buf));
+		res = verify_lf(buf, x);
 		result = buf_backup(result, buf);
 	}
 	if (aux)
-	{
-		res = ft_len(result);
-		ft_cpy(aux, (aux + res));
-	}
+		ft_cpy(aux, (aux + ft_len(result)));
 	else
 	{
 		aux = malloc(sizeof(char) * (res));
