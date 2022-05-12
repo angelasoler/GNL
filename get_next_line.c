@@ -6,13 +6,13 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/01 22:13:57 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/12 16:21:29 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int verify_lf(char *s, int size)
+int	verify_lf(char *s, int size)
 {
 	while (*s != '\n' && size)
 	{
@@ -50,6 +50,17 @@ int	ft_len(char *s)
 	return (i);
 }
 
+void	ft_cpy(char *dest, char *src)
+{
+	while (*src)
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+	*dest = 0;
+}
+
 char	*buf_backup(char	*dest, char	*src)
 {
 	int		total;
@@ -57,15 +68,10 @@ char	*buf_backup(char	*dest, char	*src)
 	int		l_dest;
 	int		i;
 
-	// if (!src)
-	// {
-	// 	free(src);
-	// 	return (0);
-	// }
 	i = 0;
 	l_dest = gnl_len(dest);
-	total = l_dest  + gnl_len(src) + 1;
-	result = malloc(total * sizeof(char));
+	total = l_dest + gnl_len(src) + 1;
+	result = malloc(total * sizeof(char *));
 	while (total)
 	{
 		while (i < l_dest)
@@ -84,6 +90,22 @@ char	*buf_backup(char	*dest, char	*src)
 	return (result);
 }
 
+void	ft_free(char *s1, char *s2)
+{
+	free(s1);
+	free(s2);
+}
+
+int	ft_error(char *result, char *buf, int x)
+{
+	if (x < 0 || x > BUFFER_SIZE)
+	{
+		ft_free(result, buf);
+		return (1);
+	}
+	return (0);
+}
+
 #include <stdio.h>
 char	*get_next_line(int fd)
 {
@@ -91,67 +113,71 @@ char	*get_next_line(int fd)
 	static char	*aux;
 	char		*result;
 	int			res;
-	int			i;
-	// static int			x;
+	int			x;
 
-	i = 0;
-	res = 0;
-	if (fd < 0 || BUFFER_SIZE == 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 256)
 		return (0);
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	result = malloc(sizeof(char) * BUFFER_SIZE);
+	result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	*result = 0;
+	res = 0;
 	while (!res)
 	{
 		if (aux)
 		{
 			res = verify_lf(aux, ft_len(aux));
 			result = buf_backup(result, aux);
+			if (res)
+				break ;
 			free(aux);
 			aux = 0;
-			if (res)
-				break;
 		}
-		read(fd, buf, BUFFER_SIZE);
-		buf[BUFFER_SIZE] = 0;
-		res = verify_lf(buf, BUFFER_SIZE);
-		result = buf_backup(result, buf);
-		// if (!x && !result)
-		// {
-		// 	free(result);
-		// 	free(buf);
-		// 	return (0);
-		// }
-	}
-	if (res != 0)
-	{
-		res = BUFFER_SIZE - res + 1;
-		aux = malloc(sizeof(char) * res);
-		while (buf[res])
+		x = read(fd, buf, BUFFER_SIZE);
+		if (ft_error(result, buf, x))
+			return (0);
+		if (!x)
 		{
-			aux[i] = buf[res];
-			res++;
-			i++;
+			if (!*result)
+			{
+				free(result);
+				result = 0;
+			}
+			ft_free(aux, buf);
+			return (result);
 		}
-		aux[i] = 0;
+		buf[x] = 0;
+		res = verify_lf(buf, x);
+		result = buf_backup(result, buf);
 	}
+	if (aux)
+		ft_cpy(aux, (aux + ft_len(result)));
+	else
+	{
+		aux = malloc(sizeof(char) * (res));
+		ft_cpy(aux, (buf + (x - res + 1)));
+	}
+	free(buf);
 	return (result);
 }
 
-#include <fcntl.h>
-#include <stdio.h>
-int	main()
-{
-	char *result;
-	int fd;
+// #include <fcntl.h>
+// #include <stdio.h>
+// int	main()
+// {
+// 	char *result;
+// 	int fd;
 
-	fd = open("file.txt", O_RDONLY);
-	while ((result = get_next_line(fd)))
-	{
-		printf("%s", result);
-		free(result);
-	}
-	close(fd);
-}
+// 	fd = open("file.txt", O_RDONLY);
+// 	result = get_next_line(fd);
+// 	while (result)
+// 	{
+// 		printf("call: ");
+// 		printf("%s", result);
+// 		result = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
 
 // Repeated calls (e.g., using a loop) to your get_next_line() function should let
 // you read the text file pointed to by the file descriptor, one line at a time.
