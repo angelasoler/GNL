@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/13 01:37:23 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/13 02:34:09 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,52 +117,90 @@ void save_aux(char **aux, char *result, char *buf, int res)
 	}
 }
 
-#include <stdio.h>
-char	*get_next_line(int fd)
+void gnl_aux(t_gnl *gnl, char **aux)
 {
-	char		*buf;
-	static char	*aux;
-	char		*result;
-	int			res;
-	int			x;
-
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (0);
-	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	*result = 0;
-	res = 0;
-	while (!res)
+	while (!gnl->res)
 	{
-		if (aux)
+		if (*aux)
 		{
-			res = verify_lf(aux, ft_len(aux));
-			result = buf_backup(result, aux);
-			if (res)
+			gnl->res = verify_lf(*aux, ft_len(*aux));
+			gnl->result = buf_backup(gnl->result, *aux);
+			if (gnl->res)
 				break ;
-			free(aux);
-			aux = 0;
+			free(*aux);
+			*aux = 0;
 		}
-		x = read(fd, buf, BUFFER_SIZE);
-		if (ft_error(result, buf, x))
+		gnl->x = read(fd, gnl->buf, BUFFER_SIZE);
+		if (ft_error(gnl->result, gnl->buf, gnl->x))
 			return (0);
 		if (!x)
 		{
-			if (!*result)
+			if (!*gnl->result)
 			{
-				free(result);
-				result = 0;
+				free(gnl->result);
+				gnl->result = 0;
 			}
-			ft_free(aux, buf);
-			return (result);
+			ft_free(*aux, gnl->buf);
+			return (gnl->result);
 		}
-		buf[x] = 0;
-		res = verify_lf(buf, x);
-		result = buf_backup(result, buf);
+		gnl->buf[x] = 0;
+		gnl->res = verify_lf(gnl->buf, x);
+		gnl->result = buf_backup(gnl->result, gnl->buf);
 	}
-	save_aux(&aux, result, (buf + (x - res + 1)), res);
+}
+
+#include <stdio.h>
+char	*get_next_line(int fd)
+{
+	t_gnl gnl;
+	static char	*aux;
+	// char		*buf;
+	// char		*result;
+	// int			res;
+	// int			x;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	gnl.buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!gnl.buf)
+		return (0);
+	gnl.result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!gnl.result)
+		return (0);
+	gnl.result = 0;
+	gnl.res = 0;
+	funct(&gnl, &aux)
+	// while (!res)
+	// {
+	// 	if (aux)
+	// 	{
+	// 		res = verify_lf(aux, ft_len(aux));
+	// 		gnl->result = buf_backup(gnl->result, aux);
+	// 		if (res)
+	// 			break ;
+	// 		free(aux);
+	// 		aux = 0;
+	// 	}
+	// 	x = read(fd, buf, BUFFER_SIZE);
+	// 	if (ft_error(gnl->result, buf, x))
+	// 		return (0);
+	// 	if (!x)
+	// 	{
+	// 		if (!*gnl->result)
+	// 		{
+	// 			free(gnl->result);
+	// 			gnl->result = 0;
+	// 		}
+	// 		ft_free(aux, buf);
+	// 		return (gnl->result);
+	// 	}
+	// 	buf[x] = 0;
+	// 	res = verify_lf(buf, x);
+	// 	gnl->result = buf_backup(gnl->result, buf);
+	// }
+	save_aux(&aux, gnl->result, (buf + (x - res + 1)), res);
 	free(buf);
-	return (result);
+	return (gnl->result);
 }
 
 // #include <fcntl.h>
