@@ -6,19 +6,26 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/13 01:37:23 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/13 17:31:42 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+#include <stdio.h>
 int	verify_lf(char *s, int size)
 {
+	// int i;
+
+	// i = 0;
 	while (*s != '\n' && size)
 	{
 		s++;
 		size--;
 	}
+	// if (!size)
+	// 	free(s);
+
 	return (size);
 }
 
@@ -96,15 +103,31 @@ void	ft_free(char *s1, char *s2)
 	free(s2);
 }
 
-int	ft_error(char *result, char *buf, int x)
-{
-	if (x < 0 || x > BUFFER_SIZE)
-	{
-		ft_free(result, buf);
-		return (1);
-	}
-	return (0);
-}
+// int	ft_read(char **buf, char **result, int fd, int x)
+// {
+// 	x = read(fd, buf, BUFFER_SIZE);
+// 	if (x < 0 || x > BUFFER_SIZE)
+// 	{
+// 		ft_free(*result, *buf);
+// 		*result = 0;
+// 		return (0);
+// 	}
+// 	if (!x)
+// 	{
+// 		if (!*result[0])
+// 		{
+// 			free(*result);
+// 			*result = 0;
+// 		}
+// 		free(*buf);
+// 		if (!*result)
+// 			return (0);
+// 		else
+// 			return (-1);
+// 	}
+// 	buf[x] = 0;
+// 	return (x);
+// }
 
 void save_aux(char **aux, char *result, char *buf, int res)
 {
@@ -117,7 +140,6 @@ void save_aux(char **aux, char *result, char *buf, int res)
 	}
 }
 
-#include <stdio.h>
 char	*get_next_line(int fd)
 {
 	char		*buf;
@@ -143,9 +165,23 @@ char	*get_next_line(int fd)
 			free(aux);
 			aux = 0;
 		}
+		// x = ft_read(&buf, &result, fd, x);
+		// if (!x || x == -1)
+		// {
+		// 	if (aux)
+		// 		free(aux);
+		// 	return (result);
+		// }
+		
 		x = read(fd, buf, BUFFER_SIZE);
-		if (ft_error(result, buf, x))
+		// if (ft_error(result, buf, x))
+		// 	return (0);
+		if (x < 0 || x > BUFFER_SIZE)
+		{
+			ft_free(result, buf);
+			result = 0;
 			return (0);
+		}
 		if (!x)
 		{
 			if (!*result)
@@ -156,7 +192,6 @@ char	*get_next_line(int fd)
 			ft_free(aux, buf);
 			return (result);
 		}
-		buf[x] = 0;
 		res = verify_lf(buf, x);
 		result = buf_backup(result, buf);
 	}
