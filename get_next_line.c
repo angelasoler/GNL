@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/14 03:09:58 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/14 18:02:55 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,20 +86,26 @@ int	add_remains_to_result(char **aux, char **result)
 	return (remains);
 }
 
+void	init_aux(char ***aux, int fd)
+{
+	// treath stdinput
+}
+
 char	*get_next_line(int fd)
 {
 	char		*buf;
-	static char	*aux;
+	static char	**aux;
 	char		*result;
 	int			remains;
 	int			x;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (0);
+	init_aux(&aux, fd);
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	*result = 0;
-	remains = add_remains_to_result(&aux, &result);
+	remains = add_remains_to_result(&aux[fd-2], &result);
 	while (!remains)
 	{
 		x = read(fd, buf, BUFFER_SIZE);
@@ -109,7 +115,44 @@ char	*get_next_line(int fd)
 		remains = count_remains_lf(buf, x);
 		result = strcat_result(result, buf);
 	}
-	save_remains(&aux, result, (buf + (x - remains + 1)), remains);
+	save_remains(&aux[fd - 3], result, (buf + (x - remains + 1)), remains);
 	free(buf);
 	return (result);
+}
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include "get_next_line.h"
+int	main()
+{
+	char *result;
+	int fd;
+	int fd1;
+	int fd2;
+	int fd3;
+	int i;
+
+	fd = open("file.txt", O_RDONLY);
+	fd1 = open("file1.txt", O_RDONLY);
+	fd2 = open("file2.txt", O_RDONLY);
+	fd3 = open("file3.txt", O_RDONLY);
+	i = 3;
+	result = get_next_line(i);
+	while (i < 7)
+	{
+		printf("%d. call: ", (i - 2));
+		printf("%s", result);
+		result = get_next_line(i);
+		i++;
+		if (!result)
+			break;
+		if (i == 6)
+			i = 3;
+	}
+	close(fd);
+	close(fd1);
+	close(fd2);
+	close(fd3);
+	return (0);
 }
