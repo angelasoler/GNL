@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/14 19:29:32 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/15 00:12:21 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*strcat_result(char	*dest, char	*src)
 	i = 0;
 	l_dest = gnl_strlen(dest);
 	total = l_dest + gnl_strlen(src) + 1;
-	result = malloc(total * sizeof(char));
+	result = malloc(total * sizeof(char) + 1);
 	while (total)
 	{
 		while (i < l_dest)
@@ -117,6 +117,11 @@ char	*get_next_line(int fd)
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdio.h>
+// int	main()
+// {
+// 	printf("%ld\n", sizeof(char));
+// 	printf("%ld\n", sizeof(char *));
+// }
 int	main()
 {
 	char *result;
@@ -128,8 +133,10 @@ int	main()
 	{
 		printf("call: ");
 		printf("%s", result);
+		free(result);
 		result = get_next_line(fd);
 	}
+	free(result);
 	close(fd);
 	return (0);
 }
