@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/14 18:02:55 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/14 18:50:28 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,14 @@ int	add_remains_to_result(char **aux, char **result)
 void	init_aux(char ***aux, int fd)
 {
 	// treath stdinput
+	int	x;
+
+	x = fd - 1
+	if (**aux)
+		make backup of aux an reallocated if new fd
+	else
+		**aux = malloc(sizeof(char **), x);
+	**aux[x] = 0;
 }
 
 char	*get_next_line(int fd)
