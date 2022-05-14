@@ -1,5 +1,5 @@
 .vscode
-.nf*
+.nfs*
 .gdb_history
 tripoille
 a.out
