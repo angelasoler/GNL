@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/14 03:09:58 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/14 19:26:51 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*strcat_result(char	*dest, char	*src)
 	i = 0;
 	l_dest = gnl_strlen(dest);
 	total = l_dest + gnl_strlen(src) + 1;
-	result = malloc(total * sizeof(char *));
+	result = malloc(total * sizeof(char));
 	while (total)
 	{
 		while (i < l_dest)
@@ -113,3 +113,41 @@ char	*get_next_line(int fd)
 	free(buf);
 	return (result);
 }
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdio.h>
+int	main()
+{
+	char *result;
+	int fd;
+
+	fd = open("file.txt", O_RDONLY);
+	result = get_next_line(fd);
+	while (result)
+	{
+		printf("call: ");
+		printf("%s", result);
+		result = get_next_line(fd);
+	}
+	close(fd);
+	return (0);
+}
+// #include <stdio.h>
+// #include <sys/types.h>
+// #include <sys/stat.h>
+// #include <fcntl.h>
+
+// int main(void)
+// {
+//     int fd;
+//     char    *line;
+//     fd = open("file.txt", O_RDONLY);
+//     line = get_next_line(fd);
+//      while (line)
+//      {
+//         free(line);
+//          line = get_next_line(fd);
+//      }
+//      free(line);
+// }
