@@ -1,2 +1,5 @@
+.vscode
 .nfs*
 .gdb_history
+tripoille
+a.out
