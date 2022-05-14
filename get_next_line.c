@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/15 00:12:21 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/15 01:03:05 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*strcat_result(char	*dest, char	*src)
 
 	i = 0;
 	l_dest = gnl_strlen(dest);
-	total = l_dest + gnl_strlen(src) + 1;
+	total = l_dest + gnl_strlen(src);
 	result = malloc(total * sizeof(char) + 1);
 	while (total)
 	{
@@ -112,31 +112,4 @@ char	*get_next_line(int fd)
 	save_remains(&aux, result, (buf + (x - remains + 1)), remains);
 	free(buf);
 	return (result);
-}
-
-#include <stdio.h>
-#include <fcntl.h>
-#include <stdio.h>
-// int	main()
-// {
-// 	printf("%ld\n", sizeof(char));
-// 	printf("%ld\n", sizeof(char *));
-// }
-int	main()
-{
-	char *result;
-	int fd;
-
-	fd = open("file.txt", O_RDONLY);
-	result = get_next_line(fd);
-	while (result)
-	{
-		printf("call: ");
-		printf("%s", result);
-		free(result);
-		result = get_next_line(fd);
-	}
-	free(result);
-	close(fd);
-	return (0);
 }
