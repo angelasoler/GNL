@@ -28,7 +28,7 @@ int	gnl_strlen(char *s)
 	while (*s)
 	{
 		if (*s == '\n')
-			return (i);
+			return (i + 1);
 		i++;
 		s++;
 	}

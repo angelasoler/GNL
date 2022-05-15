@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/14 18:50:28 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/15 01:37:25 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ char	*strcat_result(char	*dest, char	*src)
 
 	i = 0;
 	l_dest = gnl_strlen(dest);
-	total = l_dest + gnl_strlen(src) + 1;
-	result = malloc(total * sizeof(char *));
+	total = l_dest + gnl_strlen(src);
+	result = malloc(total * sizeof(char) + 1);
 	while (total)
 	{
 		while (i < l_dest)
@@ -89,14 +89,42 @@ int	add_remains_to_result(char **aux, char **result)
 void	init_aux(char ***aux, int fd)
 {
 	// treath stdinput
+	char ***temp;
 	int	x;
+	int	i;
 
-	x = fd - 1
-	if (**aux)
-		make backup of aux an reallocated if new fd
+	i = 0;
+	x = fd - 1;
+	temp = malloc(sizeof(char **) * x);
+	if (!aux)
+	{
+		**aux = malloc(sizeof(char **) * x);
+		while (i < x)
+		{
+			**aux[i] = 0;
+			i++;
+		}
+		**aux[x] = 0;
+	}
 	else
-		**aux = malloc(sizeof(char **), x);
-	**aux[x] = 0;
+	{
+		while (**aux[i])
+		{
+			**temp[i] = **aux[i];
+			i++;
+		}
+		**temp[i] = 0;
+		free(**aux);
+		**aux = malloc(sizeof(char **) * x);
+		i = 0;
+		while (**temp[i])
+		{
+			**aux[i] = **temp[i];
+			i++;
+		}
+		**aux[i] = 0;
+	}
+	free(temp);
 }
 
 char	*get_next_line(int fd)
@@ -113,7 +141,7 @@ char	*get_next_line(int fd)
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	*result = 0;
-	remains = add_remains_to_result(&aux[fd-2], &result);
+	remains = add_remains_to_result(&aux[fd - 3], &result);
 	while (!remains)
 	{
 		x = read(fd, buf, BUFFER_SIZE);
