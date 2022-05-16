@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/14 03:09:58 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/16 22:58:14 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ char	*strcat_result(char	*dest, char	*src)
 
 	i = 0;
 	l_dest = gnl_strlen(dest);
-	total = l_dest + gnl_strlen(src) + 1;
-	result = malloc(total * sizeof(char *));
+	total = l_dest + gnl_strlen(src);
+	result = malloc(total * sizeof(char *) + 1);
 	while (total)
 	{
 		while (i < l_dest)
@@ -63,7 +63,7 @@ void	save_remains(char **aux, char *result, char *buf, int remains)
 	else
 	{
 		*aux = malloc(sizeof(char) * (remains));
-		ft_strcpy(*aux, (buf));
+		ft_strcpy(*aux, buf);
 	}
 }
 
