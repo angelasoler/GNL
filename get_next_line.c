@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/15 01:37:25 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/16 19:54:20 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,52 +85,54 @@ int	add_remains_to_result(char **aux, char **result)
 		remains = 0;
 	return (remains);
 }
-
+#include <stdio.h>
 void	init_aux(char ***aux, int fd)
 {
-	// treath stdinput
-	char ***temp;
-	int	x;
-	int	i;
+	// char	***temp;
+	// int		x;
+	// int		i;
 
-	i = 0;
-	x = fd - 1;
-	temp = malloc(sizeof(char **) * x);
-	if (!aux)
+	// i = 0;
+	// x = fd - 1;
+	// temp = malloc(sizeof(char **) * x);
+	if (!**aux)
 	{
-		**aux = malloc(sizeof(char **) * x);
-		while (i < x)
-		{
-			**aux[i] = 0;
-			i++;
-		}
-		**aux[x] = 0;
+		printf("aux have some content %d\n", fd);
+	// 	while (**aux[y][i])
+	// 	{
+	// 		**temp[i] = **aux[i];
+	// 		i++;
+	// 	}
+	// 	**temp[i] = 0;
+	// 	free(**aux);
+	// 	**aux = malloc(sizeof(char **) * x);
+	// 	i = 0;
+	// 	while (**temp[i])
+	// 	{
+	// 		**aux[i] = **temp[i];
+	// 		i++;
+	// 	}
+	// 	**aux[i] = 0;
 	}
 	else
 	{
-		while (**aux[i])
-		{
-			**temp[i] = **aux[i];
-			i++;
-		}
-		**temp[i] = 0;
-		free(**aux);
-		**aux = malloc(sizeof(char **) * x);
-		i = 0;
-		while (**temp[i])
-		{
-			**aux[i] = **temp[i];
-			i++;
-		}
-		**aux[i] = 0;
+		printf("aux is empty %d\n", fd);
+		// **aux = malloc(sizeof(char **) * x);
+		// while (i < x)
+		// {
+		// 	**aux[i] = 0;
+		// 	i++;
+		// }
+		// **aux[x] = 0;
 	}
-	free(temp);
+	// free(temp);
 }
 
 char	*get_next_line(int fd)
 {
 	char		*buf;
-	static char	**aux;
+	static char	*aux = &aux => 0;
+	static char	**aux = &aux => 0x0;
 	char		*result;
 	int			remains;
 	int			x;
