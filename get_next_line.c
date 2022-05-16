@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/15 01:03:05 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/16 23:14:19 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	save_remains(char **aux, char *result, char *buf, int remains)
 	else
 	{
 		*aux = malloc(sizeof(char) * (remains));
-		ft_strcpy(*aux, (buf));
+		ft_strcpy(*aux, buf);
 	}
 }
 
@@ -112,4 +112,29 @@ char	*get_next_line(int fd)
 	save_remains(&aux, result, (buf + (x - remains + 1)), remains);
 	free(buf);
 	return (result);
+}
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include "get_next_line.h"
+int	main()
+{
+	char *result;
+
+	// result = get_next_line(0);
+	// printf("%s\n", result);
+	int fd;
+
+	fd = open("file.txt", O_RDONLY);
+	result = get_next_line(fd);
+	while (result)
+	{
+		printf("call: ");
+		printf("%s", result);
+		free(result);
+		result = get_next_line(fd);
+	}
+	close(fd);
+	return (0);
 }
