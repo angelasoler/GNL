@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/16 22:48:15 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/17 06:25:50 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*strcat_result(char	*dest, char	*src)
 {
@@ -86,59 +86,20 @@ int	add_remains_to_result(char **aux, char **result)
 	return (remains);
 }
 
-void	init_aux(char ***aux, int fd)
-{
-	char	***temp;
-	int		x;
-	int		i;
-
-	i = 0;
-	x = fd - 1;
-	temp = malloc(sizeof(char **) * x);
-	if (!*aux)
-	{
-		*aux = malloc(sizeof(char *) * x);
-		while (i < (x - 1))
-		{
-			*aux[i] = 0;
-			i++;
-		}
-	}
-	else
-	{
-		while (*aux[i])
-		{
-			ft_strcpy(&aux[0][0][i], &temp[0][0][i]);
-			i++;
-		}
-		*temp[i] = 0;
-		free(**aux);
-		*aux = malloc(sizeof(char *) * x);
-		i = 0;
-		while (*temp[i])
-		{
-			ft_strcpy(&temp[0][0][i], &aux[0][0][i]);
-			i++;
-		}
-	}
-	free(temp);
-}
-
 char	*get_next_line(int fd)
 {
 	char		*buf;
-	static char	**aux;
+	static char	*aux[1024];
 	char		*result;
 	int			remains;
 	int			x;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (0);
-	init_aux(&aux, fd);
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	*result = 0;
-	remains = add_remains_to_result(&aux[fd - 3], &result);
+	remains = add_remains_to_result(&aux[fd], &result);
 	while (!remains)
 	{
 		x = read(fd, buf, BUFFER_SIZE);
@@ -148,10 +109,11 @@ char	*get_next_line(int fd)
 		remains = count_remains_lf(buf, x);
 		result = strcat_result(result, buf);
 	}
-	save_remains(&aux[fd - 3], result, (buf + (x - remains + 1)), remains);
+	save_remains(&aux[fd], result, (buf + (x - remains + 1)), remains);
 	free(buf);
 	return (result);
 }
+	// WHY it isn't given segfault??????
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -165,22 +127,31 @@ int	main()
 	int fd2;
 	int fd3;
 	int i;
+	int count;
 
 	fd = open("file.txt", O_RDONLY);
 	fd1 = open("file1.txt", O_RDONLY);
 	fd2 = open("file2.txt", O_RDONLY);
 	fd3 = open("file3.txt", O_RDONLY);
 	i = 3;
+	count = 0;
 	result = get_next_line(i);
+	printf("%d. call: ", (i));
+	printf("%s", result);
+	i++;
 	while (i < 7)
 	{
-		printf("%d. call: ", (i - 2));
-		printf("%s", result);
+		free(result);
 		result = get_next_line(i);
-		i++;
-		if (!result)
+		printf("%d. call: ", i);
+		printf("%s", result);
+		if (!result && i == 3)
+		{
+			free(result);
 			break;
-		if (i == 6)
+		}
+		i++;
+		if (i == 7)
 			i = 3;
 	}
 	close(fd);

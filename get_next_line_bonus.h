@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/07 22:30:28 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/14 02:54:32 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/17 03:38:35 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
 # include <unistd.h>
 # include <stdlib.h>
-# define GET_NEXT_LINE_H
+# define GET_NEXT_LINE_BONUS_H
 
 char	*get_next_line(int fd);
 
