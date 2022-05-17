@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/17 06:25:50 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/17 07:04:39 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,51 +112,4 @@ char	*get_next_line(int fd)
 	save_remains(&aux[fd], result, (buf + (x - remains + 1)), remains);
 	free(buf);
 	return (result);
-}
-	// WHY it isn't given segfault??????
-
-#include <stdio.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include "get_next_line.h"
-int	main()
-{
-	char *result;
-	int fd;
-	int fd1;
-	int fd2;
-	int fd3;
-	int i;
-	int count;
-
-	fd = open("file.txt", O_RDONLY);
-	fd1 = open("file1.txt", O_RDONLY);
-	fd2 = open("file2.txt", O_RDONLY);
-	fd3 = open("file3.txt", O_RDONLY);
-	i = 3;
-	count = 0;
-	result = get_next_line(i);
-	printf("%d. call: ", (i));
-	printf("%s", result);
-	i++;
-	while (i < 7)
-	{
-		free(result);
-		result = get_next_line(i);
-		printf("%d. call: ", i);
-		printf("%s", result);
-		if (!result && i == 3)
-		{
-			free(result);
-			break;
-		}
-		i++;
-		if (i == 7)
-			i = 3;
-	}
-	close(fd);
-	close(fd1);
-	close(fd2);
-	close(fd3);
-	return (0);
 }
