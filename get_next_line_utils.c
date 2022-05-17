@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 02:46:48 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/17 07:52:29 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/17 07:59:28 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ int	gnl_strlen(char *s)
 	i = 0;
 	while (*s)
 	{
-		if (*s == '\n')
-			return (i + 1);
 		i++;
+		if (*s == '\n')
+			return (i);
 		s++;
 	}
 	return (i);
