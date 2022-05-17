@@ -6,7 +6,7 @@
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/17 08:15:27 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/17 08:26:27 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,29 +112,4 @@ char	*get_next_line(int fd)
 	save_remains(&aux, result, (buf + (x - remains + 1)), remains);
 	free(buf);
 	return (result);
-}
-
-#include <stdio.h>
-#include <fcntl.h>
-#include <stdio.h>
-int	main()
-{
-	char *result;
-
-	// result = get_next_line(0);
-	// printf("%s\n", result);
-	int fd;
-
-	fd = open("file.txt", O_RDONLY);
-	result = get_next_line(fd);
-	while (result)
-	{
-		printf("call: ");
-		printf("%s", result);
-		free(result);
-		result = get_next_line(fd);
-	}
-	free(result);
-	close(fd);
-	return (0);
 }
