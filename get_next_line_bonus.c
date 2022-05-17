@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoler <asoler@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 14:33:04 by asoler            #+#    #+#             */
-/*   Updated: 2022/05/17 07:52:24 by asoler           ###   ########.fr       */
+/*   Updated: 2022/05/17 07:04:39 by asoler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*strcat_result(char	*dest, char	*src)
 {
@@ -89,7 +89,7 @@ int	add_remains_to_result(char **aux, char **result)
 char	*get_next_line(int fd)
 {
 	char		*buf;
-	static char	*aux;
+	static char	*aux[1024];
 	char		*result;
 	int			remains;
 	int			x;
@@ -99,7 +99,7 @@ char	*get_next_line(int fd)
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	result = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	*result = 0;
-	remains = add_remains_to_result(&aux, &result);
+	remains = add_remains_to_result(&aux[fd], &result);
 	while (!remains)
 	{
 		x = read(fd, buf, BUFFER_SIZE);
@@ -109,7 +109,7 @@ char	*get_next_line(int fd)
 		remains = count_remains_lf(buf, x);
 		result = strcat_result(result, buf);
 	}
-	save_remains(&aux, result, (buf + (x - remains + 1)), remains);
+	save_remains(&aux[fd], result, (buf + (x - remains + 1)), remains);
 	free(buf);
 	return (result);
 }
