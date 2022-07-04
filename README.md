@@ -18,7 +18,7 @@
 
 💠 Multidimentional vector
 
-💠 Debuging with gdb and valgrind
+💠 Debugging with gdb and valgrind
 </p>
 
 
