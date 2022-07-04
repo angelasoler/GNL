@@ -14,6 +14,8 @@
 <p>
 💠 Static variables
 
+💠 Use of read function
+
 💠 Memory allocation and manipulation
 
 💠 Multidimentional vector
